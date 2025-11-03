@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Structure Tree - Form Identitas Diri</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f0ede5;
+            padding: 2rem;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .header h2 {
+            font-size: 20px;
+            font-weight: 400;
+            color: #5f7d8c;
+            margin-bottom: 2rem;
+        }
+
+        .treemap-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            background-color: #ffffff;
+            padding: 5px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-category {
+            height: 650px;
+            border: 3px solid #ffffff;
+            border-radius: 4px;
+            padding: 5px;
+            position: relative;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .main-category:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .main-category.data-pribadi {
+            background-color: #48c9b0;
+        }
+
+        .main-category.pendidikan {
+            background-color: #e74c3c;
+        }
+
+        .main-category.pengalaman-organisasi {
+            background-color: #27ae60;
+        }
+
+        .main-category.pengalaman-kerja {
+            background-color: #5f7d8c;
+        }
+
+        .category-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c3e50;
+            padding: 12px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+
+        .sub-items-grid {
+            display: grid;
+            gap: 5px;
+            height: calc(100% - 60px);
+        }
+
+        /* Data Pribadi Grid - 2 columns x 3 rows */
+        .data-pribadi .sub-items-grid {
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+        }
+
+        .sub-item {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 2px solid #ffffff;
+            border-radius: 4px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 500;
+            color: #2c3e50;
+            transition: background-color 0.2s ease;
+        }
+
+        .sub-item:hover {
+            background-color: rgba(255, 255, 255, 0.95);
+            cursor: pointer;
+        }
+
+        /* Data Pribadi specific positioning */
+        .data-pribadi .sub-item:nth-child(1) {
+            grid-area: 1 / 1 / 2 / 2;
+        }
+
+        .data-pribadi .sub-item:nth-child(2) {
+            grid-area: 1 / 2 / 2 / 3;
+        }
+
+        .data-pribadi .sub-item:nth-child(3) {
+            grid-area: 2 / 1 / 3 / 2;
+        }
+
+        .data-pribadi .sub-item:nth-child(4) {
+            grid-area: 2 / 2 / 4 / 3;
+        }
+
+        .data-pribadi .sub-item:nth-child(5) {
+            grid-area: 3 / 1 / 4 / 2;
+        }
+
+        /* Pendidikan Grid - 2x2 */
+        .pendidikan .sub-items-grid {
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+        }
+
+        /* Pengalaman Organisasi - 3 columns equal */
+        .pengalaman-organisasi .sub-items-grid {
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: 1fr;
+        }
+
+        /* Pengalaman Kerja - 3 columns equal */
+        .pengalaman-kerja .sub-items-grid {
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: 1fr;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .treemap-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main-category {
+                height: 500px;
+            }
+
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .header h2 {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .treemap-container {
+                grid-template-columns: 1fr;
+            }
+
+            .main-category {
+                height: 400px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .header h2 {
+                font-size: 16px;
+            }
+
+            .category-title {
+                font-size: 18px;
+                padding: 10px;
+            }
+
+            .sub-item {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
+
+        /* Tooltip effect */
+        .sub-item::after {
+            content: attr(data-description);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            margin-bottom: 5px;
+            z-index: 10;
+        }
+
+        .sub-item:hover::after {
+            opacity: 1;
+        }
+
+        /* Footer info */
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: #5f7d8c;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Menu Structure Tree</h1>
+            <h2>Form Identitas Diri</h2>
+        </div>
+
+        <div class="treemap-container">
+            <!-- Data Pribadi -->
+            <div class="main-category data-pribadi">
+                <div class="category-title">Data Pribadi</div>
+                <div class="sub-items-grid">
+                    <div class="sub-item" data-description="Input nama lengkap">Nama Lengkap</div>
+                    <div class="sub-item" data-description="Input tempat dan tanggal lahir">Tempat/Tanggal Lahir</div>
+                    <div class="sub-item" data-description="Pilihan jenis kelamin">Jenis Kelamin</div>
+                    <div class="sub-item" data-description="Email dan nomor telepon">Kontak</div>
+                    <div class="sub-item" data-description="Alamat lengkap tempat tinggal">Alamat</div>
+                </div>
+            </div>
+
+            <!-- Pendidikan -->
+            <div class="main-category pendidikan">
+                <div class="category-title">Pendidikan</div>
+                <div class="sub-items-grid">
+                    <div class="sub-item" data-description="Riwayat Sekolah Dasar">SD</div>
+                    <div class="sub-item" data-description="Riwayat Sekolah Menengah Pertama">SMP</div>
+                    <div class="sub-item" data-description="Riwayat Sekolah Menengah Atas">SMA</div>
+                    <div class="sub-item" data-description="Riwayat Pendidikan Tinggi">Perguruan Tinggi</div>
+                </div>
+            </div>
+
+            <!-- Pengalaman Organisasi -->
+            <div class="main-category pengalaman-organisasi">
+                <div class="category-title">Pengalaman Organisasi</div>
+                <div class="sub-items-grid">
+                    <div class="sub-item" data-description="Nama organisasi yang diikuti">Nama Organisasi</div>
+                    <div class="sub-item" data-description="Posisi/jabatan di organisasi">Jabatan</div>
+                    <div class="sub-item" data-description="Periode aktif di organisasi">Periode</div>
+                </div>
+            </div>
+
+            <!-- Pengalaman Kerja -->
+            <div class="main-category pengalaman-kerja">
+                <div class="category-title">Pengalaman Kerja</div>
+                <div class="sub-items-grid">
+                    <div class="sub-item" data-description="Nama perusahaan tempat bekerja">Nama Perusahaan</div>
+                    <div class="sub-item" data-description="Posisi/jabatan pekerjaan">Posisi</div>
+                    <div class="sub-item" data-description="Tahun mulai dan selesai">Tahun</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Struktur hierarki form identitas diri dengan 4 kategori utama dan sub-item masing-masing</p>
+        </div>
+    </div>
+
+    <script>
+        // Add click effect for sub-items
+        document.querySelectorAll('.sub-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove previous selection
+                document.querySelectorAll('.sub-item').forEach(el => {
+                    el.style.outline = 'none';
+                });
+                
+                // Highlight selected item
+                this.style.outline = '3px solid #2c3e50';
+                
+                // Log selection (for demonstration)
+                console.log('Selected:', this.textContent.trim());
+            });
+        });
+
+        // Add click effect for main categories
+        document.querySelectorAll('.main-category').forEach(category => {
+            category.addEventListener('click', function(e) {
+                if (e.target === this || e.target.classList.contains('category-title')) {
+                    console.log('Category:', this.querySelector('.category-title').textContent);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
